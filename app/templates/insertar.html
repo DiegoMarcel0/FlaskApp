@@ -1,0 +1,24 @@
+{%extends "index.html" %}
+{%block titulo %} Insertar{% endblock %}
+{%block contenido %} 
+
+    <h2>Formulario de Información Básica</h2>
+    <form action="\envio" method="post">
+        <label for="nombre">Nombre Completo:</label><br>
+        <input type="text" id="nombre" name="name" required><br><br>
+
+        <label for="email">Correo Electrónico:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="telefono">Teléfono:</label><br>
+        <input type="tel" id="telefono" name="phone" required><br><br>
+
+        <label for="direccion">Dirección:</label><br>
+        <input type="text" id="direccion" name="dire"><br><br>
+
+        <label for="descripcion">Descripción Breve:</label><br>
+        <textarea id="descripcion" name="sumary" rows="4" cols="50"></textarea><br><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+    {% endblock %}

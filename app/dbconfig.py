@@ -1,11 +1,8 @@
-from app import app
-from flaskext.mysql import MySQL
+import pymysql
 
-mysql = MySQL()
- 
-# MySQL configurations
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Pasw75:v'
-app.config['MYSQL_DATABASE_DB'] = 'flaskapp'
-mysql.init_app(app)
+
+def obtener_conexion():
+    return pymysql.connect(host='localhost',
+                                user='root',
+                                password='Pasw75:v',
+                                db='flaskapp')

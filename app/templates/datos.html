@@ -1,0 +1,30 @@
+{%extends "index.html" %}
+{%block titulo %} Datos {% endblock %}
+{%block contenido %} 
+<h1>Datos</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Resumen</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tupla in data %}
+        <tr>
+            {% for elemento in tupla %}
+            <td> {{elemento}}</td>
+            {% endfor %}
+            <td><a href="{{url_for('editar', id=tupla[0])}}" class="">Editar</a></td>
+            <td><a href="{{url_for('delete', id=tupla[0])}}" class="">Eliminar</a></td>
+        </tr>
+        {% endfor %}
+        
+    </tbody>
+</table>
+{% endblock %}
