@@ -17,7 +17,7 @@ def datos():
     connection= None
     data = None
     try:
-        connection= obtener_conexion()
+        connection = obtener_conexion()
         if(connection==None):
             return "Conexion fallida"
         sql = "SELECT ID, name, email, sumary FROM usuario"
@@ -141,6 +141,6 @@ def delete(id):
     return "exito"
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=True, port=5000)
 
 #url_for usa los nombres de las funciones
