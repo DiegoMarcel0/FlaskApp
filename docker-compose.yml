@@ -2,6 +2,8 @@ services:
   flask-app:
     build: ./app
     container_name: appWebLocal
-    command: python -m flask run --host=0.0.0.0 --port=5000
+    command: python -m flask run --host=0.0.0.0 --port=4999
     ports:
-      - "5000:5000"
+      - "4999:4999"
+    volumes:
+      - "./app:/app"

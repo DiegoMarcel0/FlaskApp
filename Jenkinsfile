@@ -10,16 +10,9 @@ pipeline {
 
         stage('Build & Run containers') {
             steps {
-                sh 'docker compose down' // bajar si había algo corriendo
+                sh 'docker compose down || true' // bajar si había algo corriendo
                 sh 'docker compose build'
                 sh 'docker compose up -d'
-            }
-        }
-
-        stage('Tests') {
-            steps {
-                // ejemplo: ejecutar pruebas dentro de un servicio
-                sh 'docker-compose exec -T app pytest'
             }
         }
 

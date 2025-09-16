@@ -1,15 +1,5 @@
 # FlaskApp
-Mini proyecto para probar Flask
+Mini proyecto para levantar practicas y que se vea bonito
 
-python 3.12
-
-//correr aplicacion en carpeta
-
-
-`python -m flask run`
-
-
-Nota: tener abierto y con acceso a la BD el "MySQL Workbench"
-
-Nota 2: talvez haya un mejor modo
+Disponible uso de docker compose para levantarlo
 
