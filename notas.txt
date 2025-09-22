@@ -1,0 +1,11 @@
+Por revisar:
+METODOS HTTP APIRESTFUL
+VALIDACIÓN DE DATOS
+WSGI
+DOCKER SWARM
+Pruebas con Jenkins
+Tecnicas de documentación
+KUBERNETES: Secret
+MANEJAR VARIABLES DE ENTORNO DELICADAS
+En Docker Compose puedes usar archivos de override: desarrollo, pruebas, produccion
+No usar Dockerimages, sino subirlas (Docker Hub, GitHub Container Registry, GitLab, AWS ECR, etc.)

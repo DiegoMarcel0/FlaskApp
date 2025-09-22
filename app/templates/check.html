@@ -1,0 +1,10 @@
+{%extends "index.html" %}
+{%block titulo %} Validate connection {% endblock %}
+{%block contenido %}
+<h1>Revisar conexión</h1>
+{% if data!=None %}
+    <h1><strong>Conexión Establecida!!</strong></h1>
+{% else %}
+    <h1><strong>No hay nada!</strong></h1>
+{% endif %}
+{% endblock %}

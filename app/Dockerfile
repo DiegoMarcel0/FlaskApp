@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 RUN pip install -r requirements.txt
 
-COPY . /app/
 
-EXPOSE 5000
+
+EXPOSE 4999
 

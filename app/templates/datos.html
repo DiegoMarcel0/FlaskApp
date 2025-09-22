@@ -20,8 +20,13 @@
                 {% for elemento in tupla %}
                 <td> {{elemento}}</td>
                 {% endfor %}
-                <td><a href="{{url_for('editar', id=tupla[0])}}" class="">Editar</a></td>
-                <td><a href="{{url_for('delete', id=tupla[0])}}" class="">Eliminar</a></td>
+                <td><a href="{{url_for('empleado.edit_empleado', id_empleado=tupla[0])}}" class="">Editar</a></td>
+                <td>
+                    <form action="{{url_for('empleado.delete_empleado', id_empleado=tupla[0])}}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este empleado?')">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit">Eliminar usuario</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
