@@ -6,7 +6,7 @@ presenter = EmpleadoPresenter()
 
 @empleado_bp.route("/insertar", methods =["GET"])
 def insertar():
-    return render_template('insertar.html')
+    return render_template('helloMySQL/insertar.html')
 
 @empleado_bp.route("/insertar", methods =["POST"])
 def add_empleado():
@@ -19,13 +19,13 @@ def add_empleado():
 @empleado_bp.route("/")
 def list_empleados():
     empleados = presenter.get_all_empleados()
-    return render_template("datos.html", data = empleados)
+    return render_template("helloMySQL/datos.html", data = empleados)
 
 @empleado_bp.route("/<int:id_empleado>/editar", methods =["GET"])
 def edit_empleado(id_empleado):
     empleado = presenter.get_empleado_by_id(id_empleado)
     #print(empleado)
-    return render_template("editar.html", data = empleado)
+    return render_template("helloMySQL/editar.html", data = empleado)
 
 @empleado_bp.route("/<int:id_empleado>/editar", methods = ["PUT", "POST"])
 def update_empleado(id_empleado):

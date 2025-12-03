@@ -1,22 +1,29 @@
-from flask import Flask, request
-from models.helloMySQL import db
+from flask import Flask, render_template#, request, redirect
+from extensions import db
 from dbconfig import Config
 from views.helloMySQL_view import empleado_bp
-
+from views.treasureLand_view import treasureLand_bp
 #db = SQLAlchemy(app)
 app = Flask(__name__)
-
+routes = {
+    'empleado_bp':'/empleado',
+    'treasureLand_bp':'/grafos' 
+}
 
 app.config.from_object(Config)
 
 db.init_app(app)
 
-app.register_blueprint(empleado_bp, url_prefix ="/empleado")
+app.register_blueprint(empleado_bp, url_prefix =routes['empleado_bp'])
+app.register_blueprint(treasureLand_bp, url_prefix =routes['treasureLand_bp'])
+
 
 @app.route('/')
 def main():
-    return "Hola Mundo :v"
-    #return redirect(url_for('datos'))
+    index_routes = dict(zip(app.blueprints.keys(), routes.values()))
+    return render_template("index.html", index_routes=index_routes)
+    #return "Hola Mundo :v"
+    #return redirect("/empleado")
 
 if __name__ == '__main__':
     with app.app_context():
