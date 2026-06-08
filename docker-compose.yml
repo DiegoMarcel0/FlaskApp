@@ -3,10 +3,11 @@ services:
     build: ./db
     environment:
       MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: flaskapp
     volumes:
       - MySQL_General:/var/lib/mysql/
     healthcheck:
-      test: ["CMD-SHELL", "mysql -uroot -ppass -e 'USE flaskapp;' || exit 1"]
+      test: ["CMD-SHELL", "mysql -uroot -ppass -e 'SELECT 1'"]
       interval: 10s  
       timeout: 5s    # Tiempo máximo de espera por respuesta
       retries: 5     # Número de intentos antes de fallar
