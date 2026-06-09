@@ -3,11 +3,13 @@ from extensions import db
 from dbconfig import Config
 from views.helloMySQL_view import empleado_bp
 from views.treasureLand_view import treasureLand_bp
+from views.lewisStruct_view import lewis_bp
 #db = SQLAlchemy(app)
 app = Flask(__name__)
 routes = {
     'empleado_bp':'/empleado',
-    'treasureLand_bp':'/grafos' 
+    'treasureLand_bp':'/grafos',
+    'lewis_bp':'/lewis'
 }
 
 app.config.from_object(Config)
@@ -16,7 +18,7 @@ db.init_app(app)
 
 app.register_blueprint(empleado_bp, url_prefix =routes['empleado_bp'])
 app.register_blueprint(treasureLand_bp, url_prefix =routes['treasureLand_bp'])
-
+app.register_blueprint(lewis_bp, url_prefix =routes['lewis_bp'])
 
 @app.route('/')
 def main():

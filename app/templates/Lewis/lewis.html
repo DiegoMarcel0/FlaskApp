@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visualizador de Estructuras de Lewis</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+    }
+
+    svg {
+        border: 1px solid #ccc;
+        background: white;
+    }
+
+    .atom {
+        font-size: 32px;
+        font-weight: bold;
+        text-anchor: middle;
+        dominant-baseline: middle;
+    }
+
+    .bond {
+        stroke: black;
+        stroke-width: 3;
+    }
+
+    .electron {
+        fill: black;
+    }
+</style>
+</head>
+<body>
+
+<h2>Estructura de Lewis</h2>
+
+<svg id="canvas" width="800" height="500"></svg>
+
+<script>
+const svg = document.getElementById("canvas");
+
+function drawAtom(symbol, x, y) {
+    const atom = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+    );
+
+    atom.setAttribute("x", x);
+    atom.setAttribute("y", y);
+    atom.setAttribute("class", "atom");
+    atom.textContent = symbol;
+
+    svg.appendChild(atom);
+}
+
+function drawBond(x1, y1, x2, y2, order = 1) {
+    const spacing = 6;
+
+    if (order === 1) {
+        createLine(x1, y1, x2, y2);
+    }
+    else if (order === 2) {
+        createLine(x1, y1 - spacing, x2, y2 - spacing);
+        createLine(x1, y1 + spacing, x2, y2 + spacing);
+    }
+    else if (order === 3) {
+        createLine(x1, y1, x2, y2);
+        createLine(x1, y1 - spacing, x2, y2 - spacing);
+        createLine(x1, y1 + spacing, x2, y2 + spacing);
+    }
+}
+
+function createLine(x1, y1, x2, y2) {
+    const line = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "line"
+    );
+
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
+    line.setAttribute("class", "bond");
+
+    svg.appendChild(line);
+}
+
+function drawElectronPair(x, y) {
+    drawElectron(x - 5, y);
+    drawElectron(x + 5, y);
+}
+
+function drawElectron(x, y) {
+    const circle = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+    );
+
+    circle.setAttribute("cx", x);
+    circle.setAttribute("cy", y);
+    circle.setAttribute("r", 2.5);
+    circle.setAttribute("class", "electron");
+
+    svg.appendChild(circle);
+}
+
+/* Ejemplo: CO₂ */
+
+// Oxígeno izquierdo
+drawAtom("O", 200, 250);
+
+// Carbono
+drawAtom("C", 400, 250);
+
+// Oxígeno derecho
+drawAtom("O", 600, 250);
+
+// Enlaces dobles
+drawBond(240, 250, 360, 250, 2);
+drawBond(440, 250, 560, 250, 2);
+
+// Pares libres O izquierdo
+drawElectronPair(170, 220);
+drawElectronPair(170, 280);
+drawElectronPair(220, 220);
+drawElectronPair(220, 280);
+
+
+// Pares libres O derecho
+drawElectronPair(580, 220);
+drawElectronPair(580, 280);
+drawElectronPair(630, 220);
+drawElectronPair(630, 280);
+</script>
+
+</body>
+</html>
