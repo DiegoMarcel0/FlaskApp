@@ -11,7 +11,6 @@ routes = {
     'treasureLand_bp':'/grafos',
     'lewis_bp':'/lewis'
 }
-
 app.config.from_object(Config)
 
 db.init_app(app)
@@ -26,7 +25,14 @@ def main():
     return render_template("index.html", index_routes=index_routes)
     #return "Hola Mundo :v"
     #return redirect("/empleado")
-
+#FAVICON
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        app.static_folder,
+        'favicon.svg',
+        mimetype='image/svg+xml'
+        )
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
