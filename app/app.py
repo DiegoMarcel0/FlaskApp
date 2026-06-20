@@ -1,4 +1,4 @@
-from flask import Flask, render_template#, request, redirect
+from flask import Flask, render_template, send_from_directory#, request, redirect
 from extensions import db
 from dbconfig import Config
 from views.helloMySQL_view import empleado_bp
