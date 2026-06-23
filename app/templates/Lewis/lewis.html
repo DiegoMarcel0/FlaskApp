@@ -3,10 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Visualizador de Estructuras de Lewis</title>
+<title>Estructuras de Lewis</title>
 <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
 
 <style>
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #D0D0E7;
+    }
+
+.container {
+    display: flex;
+    height: 95vh;
+}
+
+/* IZQUIERDA */
+.sidebar-left {
+    width: 250px;
+    background: #7777BB;
+    color: white;
+    padding: 15px;
+    margin-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-left h3 {
+    margin: 0;
+    border-bottom: 1px solid #D0D0E7;
+    padding-bottom: 10px;
+}
+
+.sidebar-left input {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}
+/* INPUT // BOTON */
+.input-row {
+    display: flex;
+    gap: 5px;
+}
+
+.input-row input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}
+
+.input-row button {
+    width: 40px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #3498db;
+    color: white;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.input-row button:hover {
+    background: #2980b9;
+}
+/* ESTADO */
+.status {
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #9292C8;
+}
+
+/* BOTÓN GUARDAR */
+#saveBtn {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #555;
+    color: white;
+    transition: 0.2s;
+}
+
+#saveBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+#saveBtn:not(:disabled) {
+    background: #2ecc71;
+}
+
+/* VISUALIZADOR */
+.viewer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #B1B1D8;
+    flex-direction: column;
+}
+/* TITULO */
+
+.title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
+.title {
+    margin: 0;
+    padding: 12px 140px;
+
+    background: linear-gradient(
+        135deg,
+        #7777BB,
+        #5555AA
+    );
+
+    color: white;
+
+    border-radius: 15px;
+
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.2);
+}
+
+/*
+.title {
+    color:black;
+}
+.title-container {
+    background: #5555AA;
+}*/
+/* SIDEBAR DERECHO */
+.sidebar {
+    width: 260px;
+    background: #7777BB;
+    color: white;
+    padding: 15px;
+    box-sizing: border-box;
+    margin-left: 4px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    text-align: center;
+    border-bottom: 1px solid #D0D0E7;
+    padding-bottom: 10px;
+}
+
+/* LISTA */
+#moleculeList {
+    margin-top: 10px;
+    overflow-y: auto;
+}
+
+/* ITEM */
+.mol-item {
+    background: #9292C8;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mol-name {
+    font-weight: bold;
+}
+
+/* BOTONES */
+.actions button {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 5px;
+    transition: 0.2s;
+}
+
+.actions button:hover {
+    transform: scale(1.2);
+}
     body {
         font-family: Arial, sans-serif;
         text-align: center;
@@ -37,9 +232,72 @@
 </head>
 <body>
 
-<h2>Estructura de Lewis</h2>
+<div class="container">
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar-left">
 
-<svg id="canvas" width="800" height="500"></svg>
+        <h3>Nueva molécula</h3>
+
+        <div class="input-row">
+
+            <input id="molInput"
+                   type="text"
+                   placeholder="Ej: H2O, CO2, NH3">
+
+            <button id="validateBtn">
+                ✔
+            </button>
+
+        </div>
+
+        <div class="status" id="status">
+            ⏳ Esperando entrada
+        </div>
+
+        <button id="saveBtn" disabled>
+            💾 Guardar molécula
+        </button>
+
+    </div>
+    <!-- TU VISUALIZADOR PRINCIPAL -->
+    <div class="viewer">
+        <!-- <h2>Estructura de Lewis</h2> -->
+        <div class="title-container">
+            <h1 class="title" id="title">Estructura de Lewis</h1>
+        </div>
+        <svg id="canvas" width="800" height="500"></svg>
+    </div>
+
+    <!-- SIDEBAR DERECHO -->
+    <div class="sidebar">
+
+        <h3>Moléculas</h3>
+
+        <div id="moleculeList">
+
+            <div class="mol-item">
+                <span class="mol-name" id="test">H2O</span>
+
+                <div class="actions">
+                    <button onclick="viewMol('H2O')">👁</button>
+                    <button onclick="deleteMol('H2O')">🗑</button>
+                </div>
+            </div>
+
+            <div class="mol-item">
+                <span class="mol-name">CO2</span>
+
+                <div class="actions">
+                    <button onclick="viewMol('CO2')">👁</button>
+                    <button onclick="deleteMol('CO2')">🗑</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script>
 
@@ -294,6 +552,77 @@ nodes.forEach(node => {
     //console.log("Avaiable")
     //console.log(possible)
 });
+function viewMol(name) {
+    console.log("Ver molécula:", name);
+    // aquí haces fetch a Flask para cargar la estructura
+}
+
+function deleteMol(name) {
+    console.log("Eliminar molécula:", name);
+    // aquí llamas a backend o la eliminas del DOM
+}
+const input = document.getElementById("molInput");
+const status = document.getElementById("status");
+const saveBtn = document.getElementById("saveBtn");
+const validateBtn = document.getElementById("validateBtn");
+
+function validateMolecule() {
+
+    const value = input.value.trim();
+
+    if (!value) {
+        setStatus("idle", "⏳ Esperando entrada");
+        return;
+    }
+
+    setStatus("checking", "⏳ Validando...");
+
+    setTimeout(() => {
+
+        if (isValidMolecule(value)) {
+            setStatus("valid", "✅ Molécula válida");
+        } else {
+            setStatus("invalid", "❌ Molécula inválida");
+        }
+
+    }, 400);
+}
+
+/* BOTÓN CLICK */
+validateBtn.addEventListener("click", validateMolecule);
+
+/* ENTER EN INPUT */
+input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        validateMolecule();
+    }
+});
+
+/* VALIDACIÓN SIMPLE (placeholder) */
+function isValidMolecule(text) {
+    const regex = /^[A-Z][a-z]?\d*([A-Z][a-z]?\d*)*$/;
+    return regex.test(text);
+}
+
+/* ESTADO UI */
+function setStatus(state, message) {
+
+    status.textContent = message;
+
+    if (state === "valid") {
+        saveBtn.disabled = false;
+    } else {
+        saveBtn.disabled = true;
+    }
+}
+function formatFormula(formula) {
+    return formula.replace(
+        /(\d+)/g,
+        '<sub>$1</sub>'
+    );
+}
+const test = document.getElementById("test");
+test.innerHTML = formatFormula("H2O");
 </script>
 
 </body>
