@@ -211,7 +211,7 @@ def enlaces_multiples(grafo = nx.Graph()):
             vecino_dic = grafo.nodes[vecino]
             if vecino_dic["free_atoms"] + grafo.degree(vecino)*2 >= maximos_atomos(vecino_dic["elemento"]):
                 continue
-            vecino_dic["weight"] += 2
+            grafo[node][vecino]["weight"] += 2
             #print(f"nodo {node} tiene {grafo.nodes[node]["free_atoms"]} electrones libres")
             #print(f"peso de -- {node} -> {vecino} = {grafo[node][vecino]["weight"]}")
             #print(f"octavidad de { grafo.nodes[vecino]["elemento"]} --> {maximos_atomos(grafo.nodes[vecino]["elemento"])}")
@@ -262,7 +262,7 @@ def estructura_lewis(formula):
         print ("\n\n\nValidado correctamente\n")
     else:
         print("Invalida - Finalizando...\n\n")
-        return
+        return 0, None
     # ELEGIR ATOMO CENTRAL
     elementos_originales = sorted(
         datos_molecula.keys(),
@@ -303,8 +303,9 @@ def estructura_lewis(formula):
         for element in elementos_originales:
             carga, molecula_graph = repartir_cargas(molecula_graph, carga,  element)
             if carga == 0:
-                return
-    return molecula_graph
+                return 0, None
+    pos = nx.kamada_kawai_layout(molecula_graph)
+    return pos, molecula_graph
 
 
 datos_molecula = {}
@@ -314,6 +315,7 @@ if __name__ =="__main__":
     tabla_periodica = pd.read_csv("table/Periodic_Table_of_Elements.csv")
     elementos = tabla_periodica[["AtomicNumber","Symbol", "Electronegativity", "NumberofValence", "Period"]]
     elementos = elementos.set_index("Symbol").to_dict("index")
+    print(estructura_lewis("H2O"))
 else:
     #try:
     tabla_periodica = pd.read_csv("views/lewis/table/Periodic_Table_of_Elements.csv")

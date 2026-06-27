@@ -32,12 +32,20 @@ function viewMol(name) {
     //console.log("Ver molécula:", name);
     
     fetch(url)
-        .then(res => res.json())
+        .then(async response => {
+        const result = await response.json();
+        if (response.status === 400 || response.status === 404) {
+            moleculeName = null;
+            return alert(`Error al cargar la molécula ${name}.\n${result.message}`);
+            return;
+        }
+        if (!response.ok) {
+            // Aquí entrará para códigos 400, 404, 500, etc.
+            throw new Error(result.message);
+        }
+        return result;
+    })
         .then(data => {
-            if (data.status === "err") {
-                moleculeName = null;
-                return alert(`Error al cargar la molécula ${name}.\n${data.message}`);
-            }
             // Dibujar nueva molécula
             moleculeName = name;
             title.innerHTML = `Estructura de Lewis de ${formatFormula(name)}`;
@@ -62,12 +70,20 @@ function deleteMol(id) {
         },
         credentials: "same-origin"
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === "err") {
+    .then(async response => {
+        const result = await response.json();
+        if (response.status === 404) {
             moleculeName = null;
-            return alert(`Error al intentar eliminar la molécula.\n${data.err}`);
+            alert(`Error al intentar eliminar la molécula.\n${result.message}`);
+            return;
         }
+        if (!response.ok) {
+            // Aquí entrará para códigos 400, 404, 500, etc.
+            throw new Error(result.message);
+        }
+        return result;
+    })
+    .then(data => {
         alert(`Molécula eliminada con éxito.`);
         cargarListaStructs();
     });
@@ -90,14 +106,22 @@ function saveMol() {
             name: moleculeName
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === "ok") {
-            cargarListaStructs();
-            alert(`Molécula ${moleculeName} guardada con éxito.`);
-        } else {
-            alert(`Error al guardar la molécula ${moleculeName}.\n${data.message}`);
+    .then(async response => {
+        const result = await response.json();
+        if (response.status === 400) {
+            alert(`Error al guardar la molécula ${moleculeName}.\n${result.message}`);
+            return false;
         }
+        if (!response.ok) {
+            // Aquí entrará para códigos 400, 404, 500, etc.
+            throw new Error(result.message);
+        }
+
+        return result;
+    })
+    .then(data => {
+        cargarListaStructs();
+        alert(`Molécula ${moleculeName} guardada con éxito.`);
     });
 }
 
@@ -114,13 +138,19 @@ function validateMolecule() {
     setStatus("checking", "⏳ Validando...");
 
     setTimeout(() => {
-
-        if (isValidMolecule(value)) {
-            setStatus("valid", "✅ Molécula válida");
-        } else {
-            setStatus("invalid", "❌ Molécula inválida");
-        }
-        console.log("moleculeName", moleculeName)
+        isValidMolecule(value)
+        .then(result => {
+            CONDITION = result;
+            console.log("CONDITION", CONDITION)
+            if (CONDITION) {
+                setStatus("valid", "✅ Molécula válida");
+            } else {
+                setStatus("invalid", "❌ Molécula inválida");
+            }
+            console.log("moleculeName", moleculeName)
+        });
+        
+        
 
     }, 400);
 }
@@ -142,22 +172,30 @@ function isValidMolecule(text) {
             name: text
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        const delay = 50;
-
-        // Comprobar si hubo error en la validación
-        if (data.status === "err") {
+    .then(async response => {
+        const result = await response.json();
+        if (response.status === 400) {
+            alert(`Error al validar la molécula ${text}.\n${result.message}`);
             moleculeName = null;
             return false;
         }
+        if (!response.ok) {
+            // Aquí entrará para códigos 400, 404, 500, etc.
+            throw new Error(result.message);
+        }
+
+        return result;
+    })
+    .then(data => {
+        if (!data) {
+            return false;
+        }
         // Dibujar nueva molécula
-        moleculeName = text;
+        window.moleculeName = text;
         title.innerHTML = `Estructura de Lewis de ${formatFormula(text)}`;
         drawMolecule(data.nodes, data.edges);
         return true;
     });
-    
 }
 
 

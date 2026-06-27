@@ -1,134 +1,86 @@
 from flask import Blueprint, json, render_template, jsonify, request
-from views.lewis.Lewis import estructura_lewis
-from sqlalchemy.exc import IntegrityError
 from presenters.lewisStruct_presenter import LewisPresenter
 lewis_bp = Blueprint("lewis",__name__)
 presenter = LewisPresenter()
 
-nodes = edges = []
-moleculeName = "H2O"
+molecule = ["", [], []]
+# Index and Generate H2O molecule by default
 @lewis_bp.route("/", methods =["GET"])
 def send_lewis():
-    global nodes
-    global edges
-    if nodes != [] or edges != []:
+    global molecule
+    if molecule[0] != "":
         return render_template(
             "Lewis/lewis.html",
-            name=moleculeName,
-            nodes=nodes,
-            edges=edges
+            name=molecule[0],
+            nodes=molecule[1],
+            edges=molecule[2]
         )
-    pos, molecula_grafo = estructura_lewis(moleculeName)
-    nodes = []
-    for node, data in molecula_grafo.nodes(data=True):
-        print("node: ", node, "data: ", data)
-        nodes.append({
-            "id": node,
-            "elemento": data["elemento"],
-            "free_atoms": data["free_atoms"],
-            "x": float(pos[node][1]),
-            "y": float(pos[node][0])
-            })
-    edges = []
-    for u, v, data in molecula_grafo.edges(data=True):
-        edges.append({
-            "source": u,
-            "target": v,
-            "weight": data["weight"]
-        })
+    molecule = presenter.generate_molecule("H2O")
+    if not molecule:
+        molecule = ["", [], []]
     return render_template(
         "Lewis/lewis.html",
-        nodes=nodes,
-        edges=edges,
-        name=moleculeName
+        name=molecule[0],
+        nodes=molecule[1],
+        edges=molecule[2]
     )
-
+# Validate molecule by name and generate nodes and edges
 @lewis_bp.route("/validate", methods =["POST"])
 def validate_struct():
-    global nodes
-    global edges
-    global moleculeName
+    global molecule
     data = json.loads(request.data)
+    if "name" not in data:
+        return jsonify({'status': 'err', 'message': 'Faltan datos'}), 400
     name = data['name']
-    if type(name) == type("hola"):
-        pos, molecula_grafo = estructura_lewis(name)
-    else:
-        print("What the hell is this")
-        print(name)
-        return jsonify({'status': 'err'})
-    if molecula_grafo == None:
-        return jsonify({'status': 'err'})
+    if type(name) != type("hola"):
+        return jsonify({'status': 'err', 'message': 'Tipo de dato inválido'}), 400
+    molecule = presenter.generate_molecule(name)
+    if not molecule:
+        molecule = ["", [], []]
+        return jsonify({'status': 'err', 'message': 'Molécula invalida o fuera del modelo'}), 400
+    
+    return jsonify({'status': 'ok', 'nodes': molecule[1], 'edges': molecule[2], 'name': name}), 200
 
-    nodes = []
-    for node, data in molecula_grafo.nodes(data=True):
-        nodes.append({
-            "id": node,
-            "elemento": data["elemento"],
-            "free_atoms": data["free_atoms"],
-            "x": float(pos[node][1]),
-            "y": float(pos[node][0])
-            })
-    edges = []
-    for u, v, data in molecula_grafo.edges(data=True):
-        edges.append({
-            "source": u,
-            "target": v,
-            "weight": data["weight"]
-        })
-    moleculeName = name
-    return jsonify({'status': 'ok', 'nodes': nodes, 'edges': edges, 'name': name})
-
-#Guardar -> status ok +id
+#Guardar -> status ok 
 @lewis_bp.route("/save", methods =["POST"])
 def add_struct():
     data = json.loads(request.data)
     #print(data)
     if "name" not in data:
-        return jsonify({'status': 'err', 'message': 'Missing required fields'}), 400
-    if data["name"] != moleculeName:
-        return jsonify({'status': 'err', 'message': 'Molecule name does not match the current molecule'}), 400
-        #return jsonify({'status': 'err', 'message': 'Cannot save the same molecule'}), 400
-    data["nodes"] = nodes
-    data["edges"] = edges
-    try:
-        struct = presenter.create_lstruct(data)
-        return jsonify({'status': 'ok', 'id': struct.id, 'name': struct.name})
-    except IntegrityError:
+        return jsonify({'status': 'err', 'message': 'Faltan datos'}), 400
+    if data["name"] != molecule[0]:
+        return jsonify({'status': 'err', 'message': 'La molécula no coincide con la actual'}), 400
+    data["nodes"] = molecule[1]
+    data["edges"] = molecule[2]
+    struct = presenter.create_lstruct(data)
+    if struct is None:
         return jsonify({
             'status': 'duplicate',
             'message': 'La molécula ya existe.'
         }), 409
-    except Exception as e:
-        print("Error saving structure:", type(e).__cause__)
-        return jsonify({'status': 'err', 'message': str(e)}), 400
+    return jsonify({'status': 'ok'}), 200
 
-#Get all id name ->list
+#Get all id name in a list
 @lewis_bp.route("/listar")
 def get_structs():
-    structs = presenter.get_all_structs()
-    return jsonify([{"id": t[0], "name": t[1]} for t in structs])
+    return jsonify(presenter.get_all_structs()), 200
+    #add case for empty list
 
-# Load all data of a specific structure by ID
+# Load all data of a specific structure by name
 @lewis_bp.route("/load/<string:struct_name>", methods =["GET"])
 def load_struct(struct_name):
-    try:
-        struct = presenter.get_struct_by_name(struct_name)
-        return jsonify({
-            'status': 'ok',
-            'name': struct["name"],
-            'nodes': struct["nodes"],
-            'edges': struct["edges"]
-        })
-    except Exception as e:
-        print("Error loading structure:", type(e).__cause__)
-        return jsonify({'status': 'err', 'message': str(e)}), 400
+    if(struct_name.isalnum() == False):
+        return jsonify({"err": "Nombre de molécula inválido"}), 400
+    
+    struct = presenter.get_struct_by_name(struct_name)
+    if not struct:
+        return jsonify({"err": "Molecula no encontrada"}), 404
+    return jsonify(struct), 200
     
 
 # Delete a specific structure by ID
 @lewis_bp.route("/delete/<int:struct_id>", methods =["DELETE", "POST"])
 def delete_struct(struct_id):
-    #return redirect(url_for("empleado.list_empleados"))
-    struct = presenter.delete_struct(struct_id)
-    if not struct:
-        return jsonify({"err": "Molecula no encontrado"}), 404
+    if not presenter.delete_struct(struct_id):
+        return jsonify({"err": "Molecula no encontrada"}), 404
     return jsonify({"ok": "Molecula eliminada"}), 200
