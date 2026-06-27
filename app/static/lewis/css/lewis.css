@@ -1,0 +1,221 @@
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+background: #D0D0E7;
+}
+
+.container {
+    display: flex;
+    height: 95vh;
+}
+
+/* IZQUIERDA */
+.sidebar-left {
+    width: 250px;
+    background: #7777BB;
+    color: white;
+    padding: 15px;
+    margin-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-left h3 {
+    margin: 0;
+    border-bottom: 1px solid #D0D0E7;
+    padding-bottom: 10px;
+}
+
+.sidebar-left input {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}
+/* INPUT // BOTON */
+.input-row {
+    display: flex;
+    gap: 5px;
+}
+
+.input-row input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}
+
+.input-row button {
+    width: 40px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #3498db;
+    color: white;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.input-row button:hover {
+    background: #2980b9;
+}
+/* ESTADO */
+.status {
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #9292C8;
+}
+
+/* BOTÓN GUARDAR */
+#saveBtn {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #555;
+    color: white;
+    transition: 0.2s;
+}
+
+#saveBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+#saveBtn:not(:disabled) {
+    background: #2ecc71;
+}
+
+/* VISUALIZADOR */
+.viewer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #B1B1D8;
+    flex-direction: column;
+}
+/* TITULO */
+
+.title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
+.title {
+    margin: 0;
+    padding: 12px 140px;
+
+    background: linear-gradient(
+        135deg,
+        #7777BB,
+        #5555AA
+    );
+
+    color: white;
+
+    border-radius: 15px;
+
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.2);
+}
+
+/*
+.title {
+    color:black;
+}
+.title-container {
+    background: #5555AA;
+}*/
+/* SIDEBAR DERECHO */
+.sidebar {
+    width: 260px;
+    background: #7777BB;
+    color: white;
+    padding: 15px;
+    box-sizing: border-box;
+    margin-left: 4px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    text-align: center;
+    border-bottom: 1px solid #D0D0E7;
+    padding-bottom: 10px;
+}
+
+/* LISTA */
+#moleculeList {
+    margin-top: 10px;
+    overflow-y: auto;
+}
+
+/* ITEM */
+.mol-item {
+    background: #9292C8;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mol-name {
+    font-weight: bold;
+}
+
+/* BOTONES */
+.actions button {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 5px;
+    transition: 0.2s;
+}
+
+.actions button:hover {
+    transform: scale(1.2);
+}
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+svg {
+    border: 1px solid #ccc;
+    background: white;
+}
+
+.atom {
+    font-size: 32px;
+    font-weight: bold;
+    text-anchor: middle;
+    /*dominant-baseline: middle;*/
+}
+
+.bond {
+    stroke: black;
+    stroke-width: 3;
+}
+
+.electron {
+    fill: black;
+}
